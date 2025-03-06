@@ -1,0 +1,138 @@
+﻿@page "/vehicles"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using CalixtroWebApp.vehicle_registration.Models
+@using CalixtroWebApp.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<CalixtroWebApp.Data.VehicleRegistrationAppContext> DbFactory
+
+<style>
+    .sci-fi-theme {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        /* background-image: url('background.png'); */
+        background-size: cover;
+        background-position: center;
+        color: #333;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        overflow: hidden;
+        perspective: 1000px;
+    }
+
+    .sci-fi-theme h1 {
+        /* text-shadow: */
+        color: floralwhite;
+        font-size: 3em;
+        margin-bottom: 20px;
+    }
+
+    .sci-fi-theme .btn {
+        background-color: saddlebrown;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        margin: 10px;
+        text-decoration: none;
+        font-size: 1.2em;
+        transition: background-color 0.3s ease;
+    }
+
+    .sci-fi-theme .btn:hover {
+        background-color: #0ff;
+        color: #000;
+    }
+
+    .sci-fi-theme .table {
+        margin-top: 10px;
+        border: 1px solid #5e270b;
+        width: 80%;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: rgba(240, 240, 240, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    .sci-fi-theme .table th,
+    .sci-fi-theme .table td {
+        border: 1px solid #00f;
+        padding: 10px;
+    }
+
+    .sci-fi-theme .table th {
+        background-color: rgba(0, 0, 255, 0.5);
+        color: #fff;
+    }
+
+    .sci-fi-theme .table td {
+        background-color: rgba(240, 240, 240, 0.5);
+        color: #333;
+    }
+
+    .background-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: -1;
+    }
+
+    .background-image {
+        width: 110%;
+        height: 110%;
+        position: absolute;
+        top: -5%;
+        left: -5%;
+        transition: transform 0.1s ease-out;
+    }
+</style>
+
+<PageTitle>Index</PageTitle>
+
+<div class="background-container">
+    <img src="background.png" class="background-image" id="backgroundImage" />
+</div>
+
+<div class="sci-fi-theme">
+    <h1>Vehicle Registration</h1>
+    <p>
+        <a href="vehicles/create" class="btn btn-primary">Create New</a>
+    </p>
+
+    <QuickGrid Class="table" Items="context.Vehicle">
+        <PropertyColumn Property="vehicle => vehicle.Name" />
+        <PropertyColumn Property="vehicle => vehicle.Plate" />
+        <PropertyColumn Property="vehicle => vehicle.Engine_DP" />
+
+        <TemplateColumn Context="vehicle">
+            <a href="@($"vehicles/edit?id={vehicle.Id}")" class="btn btn-info">Edit</a> |
+            <a href="@($"vehicles/details?id={vehicle.Id}")" class="btn-success">Details</a> |
+            <a href="@($"vehicles/delete?id={vehicle.Id}")" class="btn btn-danger">Delete</a>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+
+@code {
+    private VehicleRegistrationAppContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
+
+<script>
+    document.addEventListener('mousemove', function (e) {
+        const background = document.getElementById('backgroundImage');
+        const x = (window.innerWidth - e.pageX * 2) / 100;
+        const y = (window.innerHeight - e.pageY * 2) / 100;
+        background.style.transform = `translate(${x}px, ${y}px) scale(1)`;
+    });
+</script>

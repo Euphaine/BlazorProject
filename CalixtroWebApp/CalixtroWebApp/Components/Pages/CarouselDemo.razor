@@ -1,0 +1,55 @@
+﻿@page "/carouseldemo"
+
+@rendermode InteractiveServer
+
+<p>@message</p>
+
+<div style="width: 1200px">
+<Carousel ShowIndicators="true" Crossfade="true" Autoplay="CarouselAutoPlay.StartOnPageLoad"
+    Onslide="Sliding" Onslid="SlideDone">
+
+    <CarouselItem Active="true" Interval="3000">
+            <Image Src="images/coverpage/horizon-forbidden-west-cover-image.jpg" />
+        <CarouselCaption>
+            <h2>Horizon Forbidden West</h2>
+        </CarouselCaption> 
+    </CarouselItem>
+
+    <CarouselItem Interval="3000">
+            <Image Src="images/coverpage/thelastofus long.jpg" />
+        <CarouselCaption>
+            <h2>The Last of Us</h2>
+        </CarouselCaption>
+    </CarouselItem>
+
+    <CarouselItem Interval="3000">
+            <Image Src="images/coverpage/video-game-god-of-war-2018--facebook-cover.jpg" />
+        <CarouselCaption>
+            <h2>God of War</h2>
+        </CarouselCaption>
+    </CarouselItem>
+
+    <CarouselItem Interval="3000">
+            <Image Src="images/coverpage/7cda2b17fa94c98f1d788aba3491f357.jpg" />
+        <CarouselCaption>
+            <h2>Spider-Man</h2>
+        </CarouselCaption>
+    </CarouselItem>
+
+</Carousel>
+</div>
+
+
+@code {
+    string message = "Use arrows to slide";
+
+    void Sliding()
+    {
+        message = "Sliding";
+    }
+
+    void SlideDone()
+    {
+        message = "Slide done";
+    }
+}

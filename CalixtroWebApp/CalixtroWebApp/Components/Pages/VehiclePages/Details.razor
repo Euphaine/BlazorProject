@@ -1,0 +1,108 @@
+﻿@page "/vehicles/details"
+@using Microsoft.EntityFrameworkCore
+@using CalixtroWebApp.vehicle_registration.Models
+@inject IDbContextFactory<CalixtroWebApp.Data.VehicleRegistrationAppContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<style>
+    .sci-fi-theme {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #000; /* Black background */
+    color: #0ff; /* Cyan text color */
+    font-family: 'Orbitron', sans-serif; /* Sci-fi font */
+}
+
+.sci-fi-theme h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.sci-fi-theme .btn {
+    background-color: #0ff; /* Cyan button background */
+    color: #000; /* Black button text */
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
+}
+
+.sci-fi-theme .btn:hover {
+    background-color: #00f; /* Blue button background on hover */
+    color: #fff; /* White button text on hover */
+}
+
+.sci-fi-theme .table {
+    margin-top: 20px;
+    border: 1px solid #0ff;
+    width: 80%;
+}
+
+.sci-fi-theme .table th, .sci-fi-theme .table td {
+    border: 1px solid #0ff;
+    padding: 10px;
+}
+
+.sci-fi-theme .table th {
+    background-color: #00f; /* Blue header background */
+    color: #fff; /* White header text */
+}
+
+.sci-fi-theme .table td {
+    background-color: #000; /* Black cell background */
+    color: #0ff; /* Cyan cell text */
+}
+
+
+</style>
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Vehicle</h2>
+    <hr />
+    @if (vehicle is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@vehicle.Name</dd>
+            <dt class="col-sm-2">Plate</dt>
+            <dd class="col-sm-10">@vehicle.Plate</dd>
+            <dt class="col-sm-2">Engine_DP</dt>
+            <dd class="col-sm-10">@vehicle.Engine_DP</dd>
+        </dl>
+        <div>
+            <a href="@($"/vehicles/edit?id={vehicle.Id}")">Edit</a> |
+            <a href="@($"/vehicles")" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Vehicle? vehicle;
+
+    [SupplyParameterFromQuery]
+    private Guid Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        vehicle = await context.Vehicle.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (vehicle is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
